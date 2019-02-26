@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<!--把导航栏模块包含我的页面里面-->
+<head th:include="./common/head :: admin_header"></head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!--header information-->
+    <div th:replace="./common/admin :: admin_header"></div>
+    <!--左侧菜单-->
+    <div th:replace="./common/admin :: left_menu"></div>
+    <!--学生登录显示的课程列表-->
+    <div class="layui-body" th:if="${session.status} eq 'student'">
+        <!-- 内容主体区域 -->
+        <div style="padding: 20px; background-color: #F2F2F2;">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header">我的课程</div>
+                        <div class="layui-card-body">
+                            <!--<div class="layui-btn-group">
+                                <button class="layui-btn" onclick="javascript:window.location.reload()">
+                                    <i class="layui-icon">&#xe669;</i>刷新
+                                </button>
+                            </div>-->
+                            <table class="layui-table">
+                                <colgroup>
+                                    <col width="10%">
+                                    <col width="17%">
+                                    <col width="20%">
+                                    <col width="8%">
+                                    <col width="15%">
+                                </colgroup>
+                                <thead>
+                                <tr class="layui-form">
+                                    <th>课程号</th>
+                                    <th>课程名称</th>
+                                    <th>上课地点</th>
+                                    <th>学分</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!--循环的开始-->
+                                <tr th:each="u:${list}">
+                                    <td th:text="${u.cno}"></td>
+                                    <td th:text="${u.cname}"></td>
+                                    <td th:text="${u.location}"></td>
+                                    <td th:text="${u.credit}"></td>
+                                    <td>
+                                        <div class="layui-btn-group">
+                                            <button th:title="${u.id}"
+                                                    class="layui-btn layui-btn-sm btn_cancel_select">
+                                                <i class="layui-icon">&#xe642;</i>取消该课程
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <!--循环结束-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © layui.com - 底部固定区域
+</div>
+</div>
+
+
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer'], function () {
+        var $ = layui.$;  // 使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            layer = layui.layer;
+        form.render();
+        /*<![CDATA[*/
+        var cancelCourseUrl= /*[[@{/cancelCourse}]]*/;
+        /*]]>*/
+        $('.btn_cancel_select').click(function () {
+            var id = $(this).attr('title');
+            layer.open({
+                content: '确定取消该课程吗？'
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    $.ajax({
+                        url: cancelCourseUrl + "/" + id,
+                        type: "POST",
+                        dataType: 'json',
+                        async: true,
+                        success: function (resp) {
+                            if (resp.meta.success) {
+                                layer.msg('取消成功', {
+                                    icon: 6,
+                                    time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function () {
+                                })
+                                setTimeout("location.reload()", 2000);
+                                // location.reload();
+                            } else {
+                                layer.open({
+                                    title: '提示信息'
+                                    , content: '取消失败。'
+                                });
+                            }
+                        }
+                    })
+                }
+                , btn2: function (index, layero) {
+                    layer.close(index);
+                }
+                , cancel: function (index) {
+                    layer.close(index);
+                }
+            });
+        });
+    })
+</script>
+</body>
+</html>

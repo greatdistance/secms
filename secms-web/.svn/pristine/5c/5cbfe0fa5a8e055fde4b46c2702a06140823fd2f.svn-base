@@ -1,0 +1,70 @@
+package com.xa.xaufe.secmsweb.OneToMany;
+
+import com.xa.xaufe.secmsweb.BaseSpringTest;
+import com.xa.xaufe.secmsweb.entity.Admin;
+import com.xa.xaufe.secmsweb.entity.Course;
+import com.xa.xaufe.secmsweb.entity.Student;
+import com.xa.xaufe.secmsweb.service.AdminService;
+import com.xa.xaufe.secmsweb.service.CourseService;
+import com.xa.xaufe.secmsweb.service.StudentService;
+import org.junit.Test;
+import org.springframework.test.annotation.Rollback;
+
+import javax.annotation.Resource;
+import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+@Transactional()
+@Rollback(false)
+public class studentCourseTest extends BaseSpringTest {
+    @Resource
+    private StudentService studentService;
+    @Resource
+    private AdminService adminService;
+    @Resource
+    private CourseService courseService;
+
+    @Test
+    public void testSelectCourse() {
+        Student student1 = studentService.getOne(1); // 获得学生实体1
+        Student student2 = studentService.getOne(2);// 获得学生实体2
+        System.out.println(student1);
+        Set<Course> courseSet = new HashSet<>();
+        Set<Course> courseSet1 = new HashSet<>();
+        Course course1 = courseService.getOne(1);// 获得课程实体1
+        Course course2 = courseService.getOne(2);// 获得课程实体2
+        courseSet.add(course1);
+        courseSet.add(course2);
+        courseSet1.add(course2);
+        student1.setCourses(courseSet); // 学生1选择了1、2号课程
+        student2.setCourses(courseSet1);// 学生2选择了号课程
+        studentService.save(student1);
+        studentService.save(student2);
+    }
+
+    /**
+     * 2号学生已经选择了2号课程
+     * 现在需要继续选择1号课程
+     */
+    @Test
+    public void testSelectCourse2(){
+        Student student2 = studentService.getOne(2);// 获得学生实体2
+        Course course1 = courseService.getOne(1);// 获得课程实体1
+        Set<Course> courseSet1 = student2.getCourses();
+        System.out.println(courseSet1.size());
+        Iterator<Course> it = courseSet1.iterator();
+        while (it.hasNext()) {
+            Course str = it.next();
+            System.out.println("while" + str);
+        }
+        courseSet1.add(course1);
+        System.out.println("+++++++++++++++++++++++++++");
+        System.out.println(courseSet1.size());
+        Iterator<Course> it1 = courseSet1.iterator();
+        while (it.hasNext()) {
+            Course str = it1.next();
+            System.out.println("while" + str);
+        }
+    }
+}

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<!--把导航栏模块包含我的页面里面-->
+<head th:include="./common/head :: admin_header"></head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!--header information-->
+    <div th:replace="./common/admin :: admin_header"></div>
+    <!--左侧菜单-->
+    <div th:insert="./common/admin :: left_menu"></div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 20px;">
+
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">我的资料</li>
+                    <li>我的头像</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <!--学生资料显示-->
+                        <div class="layui-form layui-tab-content" th:if="${session.status} eq 'student'">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-form layui-form-pane">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">学号</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.sno}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">姓名</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.username}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item" th:if="${session.status} ne 'admin' ">
+                                        <label class="layui-form-label">性别</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.sex}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">学院</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.secondaryCollege}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item" th:if="${session.status} eq 'student'">
+                                        <label class="layui-form-label">所在系</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.dept}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">班级</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.grade}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label">签名</label>
+                                        <div class="layui-input-block">
+                                            <textarea placeholder="随便写些什么刷下存在感" name="sign"
+                                                      autocomplete="off" class="layui-textarea"
+                                                      style="height: 80px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--教师资料显示-->
+                        <div class="layui-form layui-tab-content" th:if="${session.status} eq 'teacher'">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-form layui-form-pane">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">教工号</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.tno}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">姓名</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.username}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">性别</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.sex}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label">签名</label>
+                                        <div class="layui-input-block">
+                                            <textarea placeholder="随便写些什么刷下存在感"  name="sign"
+                                                      autocomplete="off" class="layui-textarea"
+                                                      style="height: 80px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <!--教务管理员资料显示-->
+                        <div class="layui-form layui-tab-content" th:if="${session.status} eq 'admin'">
+                            <div class="layui-tab-item layui-show">
+                                <div class="layui-form layui-form-pane">
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">教务号</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.ano}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label">姓名</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" th:value="${session.loginUser.username}" disabled
+                                                   autocomplete="off" class="layui-input layui-disabled"/>
+                                        </div>
+                                    </div>
+
+                                    <div class="layui-form-item layui-form-text">
+                                        <label class="layui-form-label">签名</label>
+                                        <div class="layui-input-block">
+                                            <textarea placeholder="随便写些什么刷下存在感" name="sign"
+                                                      autocomplete="off" class="layui-textarea"
+                                                      style="height: 80px;"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="layui-tab-item" style="padding-top: 15px;">
+                        <div style="height: 375px; width: 400px; background-color: #F2F2F2;text-align:center">
+                            <div class="layui-form-item">
+                                <div class="avatar-add" style="padding: 40px;">
+                                    <button type="button" class="layui-btn upload-img" id="btn_upload">
+                                        <i class="layui-icon">&#xe67c;</i>上传头像
+                                    </button>
+                                    <br/>
+                                    <p style="padding-top: 20px; padding-bottom: 35px;color: #B3B3B3;font-size: 12px">
+                                        建议尺寸168*168，支持jpg、png、gif，最大不能超过1M</p>
+                                    <img style="border-radius:50%; height: 168px;width: 168px; overflow:hidden;"
+                                         class="myavatar"
+                                         th:src="@{/api/file/{filename}(filename=${session.loginUser.avatar})}">
+                                    <span class="loading"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="layui-footer">
+    <!-- 底部固定区域 -->
+    © layui.com - 底部固定区域
+</div>
+</div>
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer', 'upload'], function () {
+        var $ = layui.$;  //使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            upload = layui.upload,
+            layer = layui.layer;
+        /*<![CDATA[*/
+        var uploadUrl = /*[[@{/upload}]]*/;
+        /*]]>*/
+
+        //设定文件大小限制
+        upload.render({
+            elem: '#btn_upload'
+            , url: uploadUrl
+            , async: false  //同步上传，为了实现图片回显
+            , exts: 'jpg|jpeg|png|bmp|gif|ico'
+            , size: 10000 //限制文件大小，单位 KB
+            , accept: "file" //这个 file作为参数提交给服务器，非常重要。file封装上传的文件对象。
+            , done: function (resp) {
+                var fileName = resp.data;
+                fileName = "./api/file/" + fileName;
+                $(".myavatar").prop("src", fileName);
+            }
+            , error: function () {
+                layer.closeAll();
+            }
+        });
+    });
+</script>
+</body>
+</html>

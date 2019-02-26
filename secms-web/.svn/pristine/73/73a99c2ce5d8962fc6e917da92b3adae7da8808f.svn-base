@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head th:include="./common/head :: header"></head>
+<body>
+<!--把导航栏模块包含我的页面里面-->
+<div th:insert="./common/header :: navigator"></div>
+
+<div class="layui-container fly-marginTop">
+    <div class="fly-panel fly-panel-user" pad20>
+        <div class="layui-tab layui-tab-brief" lay-filter="user">
+            <ul class="layui-tab-title">
+                <li><a th:href="@{/users/toStudentLogin}">学生登录</a></li>
+                <li><a th:href="@{/users/toTeacherLogin}">教师登录</a></li>
+                <li class="layui-this">教务处登录</li>
+            </ul>
+            <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                <div class="layui-tab-item layui-show">
+                    <div class="layui-form layui-form-pane">
+                        <form class="layui-form" lay-filter="component-form-group" action="#">
+                            <div class="layui-form-item">
+                                <label for="L_email" class="layui-form-label">教务号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="L_email" name="ano" required lay-verify="required" placeholder="请输入教务号" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label for="L_pass" class="layui-form-label">密码</label>
+                                <div class="layui-input-inline">
+                                    <input type="password" id="L_pass" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label for="L_vercode" class="layui-form-label">验证码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="L_vercode" name="randomCode" required lay-verify="required" placeholder="请输入验证码" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-form-mid">
+                                  <span style="color: #cc4f26;">
+                                      <img alt="验证码" style="cursor: pointer; margin-top: -7px" onclick="this.src='./defaultKaptcha?id='+new Date()*1" th:src="@{/defaultKaptcha}"/>
+                                  </span>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <!--
+                                <button class="layui-btn"  lay-submit="">立即登录</button>
+                                -->
+                                <button class="layui-btn" lay-submit="" lay-filter="loginForm">立即登录</button>
+                                <span style="padding-left:20px;">
+                  <a href="forget.html">忘记密码？</a>
+                </span>
+                            </div>
+                           <!-- <div class="layui-form-item fly-form-app">
+                                <span>或者使用社交账号登入</span>
+                                <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})"
+                                   class="iconfont icon-qq" title="QQ登入"></a>
+                                <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})"
+                                   class="iconfont icon-weibo" title="微博登入"></a>
+                            </div>-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--把尾部的页面包含进来-->
+<div th:replace="./common/footer :: footer"></div>
+
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer'], function () {
+        var $ = layui.$;  //使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            layer = layui.layer;
+        //监听提交
+        /*<![CDATA[*/
+        var loginUrl = /*[[@{/admin/login}]]*/;//取值
+        var toIndexUrl = /*[[@{/toMain}]]*/;
+        /*]]>*/
+        form.on('submit(loginForm)', function (data) {
+            $.ajax({
+                url: loginUrl,
+                type: "POST",
+                dataType: 'json',
+                async: true,
+                data: {param: JSON.stringify(data.field)},
+                success: function (resp) {
+                    if (resp.meta.success) {
+                        window.location.href = toIndexUrl;
+                    } else if(resp.meta.message == 'randomCodeError') {
+                        layer.ready(function () {
+                            layer.msg('验证码不正确：请检查验证码');
+                        });
+                    }else if(resp.meta.message == 'anoError') {
+                        layer.ready(function () {
+                            layer.msg('教务号不存在：请检查教务号');
+                        });
+                    } else {
+                        layer.ready(function () {
+                            layer.msg('密码错误：请检查您输入的错误');
+                        });
+                    }
+                }
+            })
+            return false;
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<!--把导航栏模块包含我的页面里面-->
+<head th:include="./common/head :: admin_header"></head>
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <!--header information-->
+    <div th:replace="./common/admin :: admin_header"></div>
+    <!--左侧菜单-->
+    <div th:replace="./common/admin :: left_menu"></div>
+
+    <div class="layui-body">
+        <!-- 内容主体区域 -->
+        <div style="padding: 20px; background-color: #F2F2F2;">
+                <div class="layui-row layui-col-space15">
+                    <div class="layui-col-md12">
+                        <div class="layui-card">
+                            <div class="layui-card-header">学生列表</div>
+                            <div class="layui-card-body">
+                                <div class="layui-btn-group">
+                                    <button id="btn_add" class="layui-btn">
+                                        <i class="layui-icon">&#xe608;</i>增加
+                                    </button>
+                                    <button class="layui-btn" id="deleteAll">
+                                        <i class="layui-icon">&#xe640;</i>删除
+                                    </button>
+                                    <button class="layui-btn" onclick="javascript:window.location.reload()">
+                                        <i class="layui-icon">&#xe669;</i>刷新
+                                    </button>
+                                </div>
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="110">
+                                        <col width="100">
+                                        <col width="100">
+                                        <col width="100">
+                                        <col width="150">
+                                        <col width="150">
+                                        <col width="150">
+                                        <col width="100">
+                                    </colgroup>
+                                    <thead>
+                                    <tr class="layui-form">
+                                        <th>
+                                            <input class="checkboxAll" lay-filter="selectAll" type="checkbox"
+                                                   name=""
+                                                   title="全选" lay-skin="primary"/>
+                                        </th>
+                                        <th>学号</th>
+                                        <th>姓名</th>
+                                        <th>性别</th>
+                                        <th>学院</th>
+                                        <th>所在系</th>
+                                        <th>班级</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <!--循环的开始-->
+                                    <tr th:each="u:${studentsList}">
+                                        <td class="layui-form">
+                                            <input type="checkbox" name="check[]" th:value="${u.id}" lay-skin="primary"
+                                                   lay-filter="oneChoose"/>
+                                        </td>
+                                        <td th:text="${u.sno}"></td>
+                                        <td th:text="${u.username}"></td>
+                                        <td th:text="${u.sex}"></td>
+                                        <td th:text="${u.secondaryCollege}"></td>
+                                        <td th:text="${u.dept}"></td>
+                                        <td th:text="${u.grade}"></td>
+                                        <td>
+                                            <div class="layui-btn-group">
+                                                <button th:title="${u.id}"
+                                                        class="layui-btn layui-btn-sm btn_modify">
+                                                    <i class="layui-icon">&#xe642;</i>修改
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!--循环结束-->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div id="mypager"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        © layui.com - 底部固定区域
+    </div>
+</div>
+
+
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer', 'laypage'], function () {
+        var $ = layui.$;  // 使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            layer = layui.layer,
+            laypage = layui.laypage;
+        form.render();
+        /*<![CDATA[*/
+        var pageQueryUrl = /*[[@{/student/toStudentList}]]*/;// 分页查询动作URL
+
+        var recordCount = [[${pager.getTotalElements()}]]; // 总记录条数
+        var perPageCount = [[${pager.getSize()}]]; // 每页记录数
+        var currPageNum = [[${pager.getNumber()+1}]];// 当前页号
+        /*]]>*/
+        //总页数低于页码总数
+        laypage.render({
+            elem: 'mypager'
+            , count: recordCount // 记录总数
+            , limit: perPageCount // 每页的记录数
+            , layout: ['count', 'prev', 'page', 'next', 'refresh', 'skip']
+            , jump: function (obj, first) {
+                //首次不执行
+                if (!first) {
+                    window.location.href = pageQueryUrl + "?currentPageNumber=" + (obj.curr - 1)
+                }
+            }
+            , curr: currPageNum // 当前页号
+        });
+        element.render();
+        /*<![CDATA[*/
+        var toUpdateUrl = /*[[@{/student/toUpdate}]]*/;
+        var deleteListUrl =/*[[@{/student/deleteList}]]*/
+        var toSaveUrl = /*[[@{/student/toSave}]]*/;
+        /*]]>*/
+        $("#btn_add").click(function () {
+            layer.open({
+                type: 2,
+                title: '添加学生',
+                content: toSaveUrl,
+                area: ['600px', '480px']
+            });
+        });
+        $(".btn_modify").click(function () {
+            var id = $(this).attr('title');
+            layer.open({
+                type: 2,
+                title: '修改学生',
+                content: toUpdateUrl + "/" + id,
+                area: ['600px', '480px']
+            });
+        });
+
+        form.on('checkbox(selectAll)', function (data) {
+            $("input[name='check[]']").each(function () {
+                this.checked = data.elem.checked;
+                console.log(data);
+            });
+            form.render('checkbox');
+        });
+
+        $('#deleteAll').click(function () {
+            var items = [];
+            $("input[name='check[]']:checked").each(
+                function () {
+                    items.push($(this).val());
+                })
+            items = JSON.stringify(items);
+            layer.open({
+                content: '确定删除吗？'
+                , btn: ['确定', '取消']
+                , yes: function (index, layero) {
+                    $.ajax({
+                        url: deleteListUrl,
+                        type: "POST",
+                        dataType: 'json',
+                        data: {param: items},
+                        async: true,
+                        success: function (resp) {
+                            if (resp.meta.success) {
+                                layer.msg('删除成功', {
+                                    icon: 6,
+                                    time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                                }, function () {
+                                })
+                                setTimeout("location.reload()", 2000);
+                               // location.reload();
+                            } else {
+                                layer.open({
+                                    title: '提示信息'
+                                    , content: '删除失败。'
+                                });
+                            }
+                        }
+                    })
+                }
+                , btn2: function (index, layero) {
+                    layer.close(index);
+                }
+                , cancel: function (index) {
+                    layer.close(index);
+                }
+            });
+        });
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<div th:fragment="left_menu" class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+            <li class="layui-nav-item" th:if="${session.status} eq 'admin'">
+                <a class="" href="javascript:;">系统管理</a>
+                <dl class="layui-nav-child">
+                    <dd><a th:href="@{/student/toStudentList}">学生列表</a></dd>
+                    <dd><a th:href="@{/teacher/toTeacherList}">教师列表</a></dd>
+                    <dd><a th:href="@{/course/toCourseList}">课程列表</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" th:if="${session.status} eq 'student'">
+                <a href="javascript:;">网上平台</a>
+                <dl class="layui-nav-child">
+                    <dd><a th:href="@{/course/toCourseList}">选课信息</a></dd>
+                    <dd><a href="javascript:;">我的选课</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">个人信息</a>
+                <dl class="layui-nav-child">
+                    <dd><a th:href="@{/toSet}">个人资料</a></dd>
+                    <dd><a th:href="@{/toUpdatePassword}">修改密码</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;">其他</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="#">系统帮助</a></dd>
+                    <dd><a th:href="@{/logout}">退出</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+<div class="layui-header" th:fragment="admin_header">
+    <div class="layui-logo">学生选修课管理</div>
+    <!-- 头部区域（可配合layui已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+        <li class="layui-nav-item"><a th:href="@{/toMain}">首页</a></li>
+        <li class="layui-nav-item" th:if="${session.status} eq 'admin'"><a th:href="@{/student/toStudentList}">学生管理</a></li>
+        <li class="layui-nav-item" th:if="${session.status} eq 'admin'"><a th:href="@{/teacher/toTeacherList}">教师管理</a></li>
+        <li class="layui-nav-item" th:if="${session.status} eq 'admin'"><a th:href="@{/course/toCourseList}">课程管理</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">其它系统</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">邮件管理</a></dd>
+                <dd><a href="">消息管理</a></dd>
+                <dd><a href="">授权管理</a></dd>
+            </dl>
+        </li>
+    </ul>
+    <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item">
+            <a href="javascript:;">
+                <img th:src="@{/api/file/{filename}(filename=${session.loginUser.avatar})}"
+                     class="layui-nav-img myavatar">
+                <span th:text="${session.loginUser.username}"></span>
+            </a>
+            <dl class="layui-nav-child">
+                <dd><a th:href="@{/toSet}">基本资料</a></dd>
+                <dd><a href="">安全设置</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item"><a th:href="@{/logout}">注销</a></li>
+    </ul>
+</div>

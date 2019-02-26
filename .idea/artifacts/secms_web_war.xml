@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="secms-web:war">
+    <output-path>$PROJECT_DIR$/secms-web/target</output-path>
+    <root id="archive" name="secms-web-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="secms-web:war exploded" />
+    </root>
+  </artifact>
+</component>

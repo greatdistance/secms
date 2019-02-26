@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="./common/head :: admin_header"></div>
+<body>
+<!--添加用户的面板-->
+<div class="layui-col-md12" id="add_pane">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h1 style="text-align: center;">修改学生</h1>
+            <hr class="layui-bg-blue">
+        </div>
+        <br/><br/>
+        <div class="layui-card-body">
+            <form class="layui-form" action="">
+                <input type="hidden" th:value="${studentDetails.id}" name="id" />
+                <input type="hidden" th:value="${studentDetails.password}" name="password" />
+                <div class="layui-form-item">
+                    <label class="layui-form-label" >学号：</label>
+                    <div class="layui-input-block">
+                        <input type="text" th:value="${studentDetails.sno}" name="sno" autocomplete="off" placeholder="请输入学生学号" required lay-verify="required"
+                               class="layui-input"/>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="username" autocomplete="off" placeholder="请输入学生姓名" required lay-verify="required"
+                               class="layui-input" th:value="${studentDetails.username}"/>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">学院：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="secondaryCollege" autocomplete="off" placeholder="请输入学生学院" required lay-verify="required"
+                               class="layui-input" th:value="${studentDetails.secondaryCollege}" />
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所在系：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="dept" autocomplete="off" placeholder="请输入学生所在系" required lay-verify="required"
+                               class="layui-input" th:value="${studentDetails.dept}"/>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">班级：</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="grade" autocomplete="off" placeholder="请输入学生班级" required lay-verify="required"
+                               class="layui-input" th:value="${studentDetails.grade}"/>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别：</label>
+                    <div class="layui-input-block">
+                        <input type="radio" th:checked="${studentDetails.sex} eq '男'" name="sex" value="男" title="男" />
+                        <input type="radio" th:checked="${studentDetails.sex} eq '女'" name="sex" value="女" title="女" />
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+
+                        <button class="layui-btn" id="btn_save" lay-submit="" lay-filter="updateUser">修改</button>
+
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--添加用户的面板结束-->
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer'], function () {
+        var $ = layui.$;  //使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            layer = layui.layer;
+
+        //监听提交
+        /*<![CDATA[*/
+        var updateUrl = /*[[@{/student/update}]]*/;
+        /*]]>*/
+        form.on('submit(updateUser)', function (data) {
+            $.ajax({
+                url: updateUrl,
+                type: "POST",
+                dataType: 'json',
+                async: true,
+                data: {param: JSON.stringify(data.field)},
+                success: function (resp) {
+                    if (resp.meta.success) {
+                        layer.msg('修改成功', {
+                            icon: 6,
+                            time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                        })
+                        //关闭当前弹出层？
+                        //延迟多少毫秒关闭
+                        window.parent.location.reload();
+                        setTimeout("closePop()",2000);
+                        //layer.closeAll();
+                    }else{
+                        layer.open({
+                            title: '提示信息'
+                            ,content: '修改失败。'
+                        });
+                    }
+                }
+            })
+
+            return false;
+        })
+    })
+    function closePop(){
+        //关闭当前弹出层
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        parent.layer.close(index);
+    }
+</script>
+</body>
+</html>

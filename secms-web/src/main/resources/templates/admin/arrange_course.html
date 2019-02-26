@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="./common/head :: admin_header"></div>
+<body>
+<!--添加用户的面板-->
+<div class="layui-col-md12" id="add_pane">
+    <div class="layui-card">
+        <div class="layui-card-header">
+            <h1 style="text-align: center;">安排课程</h1>
+            <hr class="layui-bg-blue">
+        </div>
+        <br/><br/>
+
+        <div class="layui-card-body">
+            <form class="layui-form" action="">
+                <div class="layui-form-item layui-form">
+                    <label class="layui-form-label">选择课程</label>
+                    <div class="layui-input-block">
+                        <select name="roleId" lay-verify="required" id="add_role_name">
+                            <option value="">请选择课程</option>
+                            <option th:value="${u.id}" th:each="u:${coursesList}" th:text="${u.cname}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+
+                        <button class="layui-btn" id="btn_save" lay-submit="" lay-filter="updateUser">修改</button>
+
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--添加用户的面板结束-->
+<script th:src="@{/res/layui/layui.js}"></script>
+<script th:inline="javascript">
+    layui.use(['form', 'element', 'layer'], function () {
+        var $ = layui.$;  //使用jquery;
+        var form = layui.form,
+            element = layui.element,
+            layer = layui.layer;
+
+        //监听提交
+        /*<![CDATA[*/
+        var updateUrl = /*[[@{/teacher/update}]]*/;
+        /*]]>*/
+        form.on('submit(updateUser)', function (data) {
+            $.ajax({
+                url: updateUrl,
+                type: "POST",
+                dataType: 'json',
+                async: true,
+                data: {param: JSON.stringify(data.field)},
+                success: function (resp) {
+                    if (resp.meta.success) {
+                        layer.msg('分配课程成功', {
+                            icon: 6,
+                            time: 3000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function () {
+                        })
+                        //关闭当前弹出层？
+                        //延迟多少毫秒关闭
+                        window.parent.location.reload();
+                        setTimeout("closePop()", 2000);
+                        //layer.closeAll();
+                    } else {
+                        layer.open({
+                            title: '提示信息'
+                            , content: '分配课程失败。'
+                        });
+                    }
+                }
+            })
+            return false;
+        })
+    })
+
+    function closePop() {
+        //关闭当前弹出层
+        var index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        parent.layer.close(index);
+    }
+</script>
+</body>
+</html>

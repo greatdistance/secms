@@ -1,0 +1,135 @@
+package com.xa.xaufe.secmsweb.entity;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "student")
+public class Student implements Serializable, Cloneable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id; // 主键id
+    private String sno;// 学号
+    private String username; // 姓名
+    private String grade; // 班级
+    private String secondaryCollege; // 学院
+    private String dept;// 所在系
+    private String sex;// 性别
+    private String password; // 密码
+    private String avatar = "defaultavatar.jpg";
+    @Transient
+    private String randomCode; // 随机验证码 不作为数据库字段
+    /**
+     * 学生与课程的关系是多对多
+     */
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @JoinTable(name = "student_course")
+    @Column(name = "course_id")
+    private Set<Course> courses = new HashSet<Course>();
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getSno() {
+        return sno;
+    }
+
+    public void setSno(String sno) {
+        this.sno = sno;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getGrade() {
+        return grade;
+    }
+
+    public void setGrade(String grade) {
+        this.grade = grade;
+    }
+
+    public String getSecondaryCollege() {
+        return secondaryCollege;
+    }
+
+    public void setSecondaryCollege(String secondaryCollege) {
+        this.secondaryCollege = secondaryCollege;
+    }
+
+    public String getDept() {
+        return dept;
+    }
+
+    public void setDept(String dept) {
+        this.dept = dept;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getRandomCode() {
+        return randomCode;
+    }
+
+    public void setRandomCode(String randomCode) {
+        this.randomCode = randomCode;
+    }
+
+    public Set<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(Set<Course> courses) {
+        this.courses = courses;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", sno='" + sno + '\'' +
+                ", username='" + username + '\'' +
+                ", grade='" + grade + '\'' +
+                ", secondaryCollege='" + secondaryCollege + '\'' +
+                ", dept='" + dept + '\'' +
+                ", sex='" + sex + '\'' +
+                ", password='" + password + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", randomCode='" + randomCode + '\'' +
+                '}';
+    }
+}

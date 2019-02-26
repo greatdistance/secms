@@ -1,0 +1,21 @@
+package com.xa.xaufe.secmsweb.controller.users;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("users")
+public class UsersController {
+    @RequestMapping("toStudentLogin")
+    public String toStudentLogin() {
+        return "login2";
+    }
+    @RequestMapping("toTeacherLogin")
+    public String toTeacherLogin() {
+        return "user/teacher_login";
+    }
+    @RequestMapping("toAdminLogin")
+    public String toAdminLogin() {
+        return "user/admin_login";
+    }
+}
